@@ -1,0 +1,18 @@
+{% extends '_partials/base.html' %}
+{% load static%}
+
+
+{% block title %} Create TODO {% endblock %}
+
+{% block content %}
+    <h1>Todo Detail</h1>
+
+    {% for item in form %}
+        Title: {{ item.title }}
+
+    {% endfor %}
+
+
+
+
+{% endblock %}

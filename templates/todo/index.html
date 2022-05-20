@@ -5,8 +5,41 @@
 {% block title %} TODO Index {% endblock %}
 
 {% block content %}
-    TODO index
+    TODOs
+    {% if todos %}
+    <table class="ui table">
+        <thead>
+            <td>Title</td>
+            <td>Description</td>
+            <td>Whether Completed</td>
+            <td>Action</td>
+        </thead>
+        <tbody>
+            {% for todo in todos %}
+                <tr>
+                    <td>{{ todo.title }}</td>
+                    <td>{{ todo.description }}</td>
+                    <td>
+                        {% if todo.is_completed %}
+                            Yes<i class="check icon green"></i>
+                        {% else %}No
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="">
+                            <i class="eye icon"></i>
+                        </a>
+                        <a href="">
+                            <i class="pencil icon"></i>
+                        </a>
+                    </td>
+                </tr>
 
-    <img src="{% static '/img/abc.png' %}" />
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <h1 class="ui header">No Todos. Create Some</h1>
+    {% endif %}
 
 {% endblock %}
