@@ -26,7 +26,7 @@
                         {% endif %}
                     </td>
                     <td>
-                        <a href="">
+                        <a href="{% url 'todo' todo.pk %}">
                             <i class="eye icon"></i>
                         </a>
                         <a href="">
@@ -36,6 +36,17 @@
                 </tr>
 
             {% endfor %}
+                <tr>
+                    <td>
+                        <a href="?filter=all">All {{ all_count }}</a>
+                    </td>
+                    <td>
+                        <a href="?filter=incomplete"> {{ incomplete_count }} Remaining</a>
+                    </td>
+                    <td>
+                        <a href="?filter=complete">{{ completed_count }} Completed</a>
+                    </td>
+                </tr>
         </tbody>
     </table>
     {% else %}

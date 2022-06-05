@@ -16,8 +16,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+import helpers.views
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('todo.urls')),
     path('authentication/', include('authentication.urls'))
 ]
+
+# handler404 = "helpers.views.handle_not_found"
