@@ -4,8 +4,12 @@
 
 {% block title %} TODO Index {% endblock %}
 
+{% include '_partials/messages.html' %}
+
 {% block content %}
     TODOs
+    {% include '_partials/messages.html' %}
+    <br>
     {% if todos %}
     <table class="ui table">
         <thead>
@@ -29,7 +33,7 @@
                         <a href="{% url 'todo' todo.pk %}">
                             <i class="eye icon"></i>
                         </a>
-                        <a href="">
+                        <a href="{% url 'edit-todo' todo.pk %}">
                             <i class="pencil icon"></i>
                         </a>
                     </td>

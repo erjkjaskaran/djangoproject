@@ -2,14 +2,12 @@
 {% load static%}
 
 
-{% block title %} Create TODO {% endblock %}
+{% block title %} Edit TODO {% endblock %}
 
 {% block content %}
-    <h1 class="ui header">Create Todo</h1>
+    <h1 class="ui header">Edit Todo</h1>
 
-    {% include '_partials/messages.html' %}
-
-    <form class="ui form" method="post" action="{% url 'create-todo' %}">
+    <form class="ui form" method="post" action="{% url 'edit-todo'  todo.id%}">
         {% csrf_token %}
         {{ form.as_p }}
         <input class="ui button primary" value="Submit" type="submit"/>
