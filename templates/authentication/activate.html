@@ -1,9 +1,6 @@
-{% autoescape on %}
+{% autoescape off %}
+    Hi {{ user.username }} Please use the link below to verify your account.
 
-    Hi {{ user.username }}
-
-    Please use the link below to verify your account.
-
-    <a href="http://{{ domain }}{% url 'activate' uidb64=uid token=token %}" >Activate</a>
+    http://{{ domain }}{% url 'activate' uidb64=uid token=token %}
 
 {% endautoescape %}

@@ -1,3 +1,5 @@
+import threading
+
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from validate_email import validate_email
@@ -13,6 +15,17 @@ from django.utils.encoding import force_bytes,force_str,DjangoUnicodeDecodeError
 from django.core.mail import EmailMessage
 from django.conf import settings
 from django.contrib.auth.tokens import default_token_generator
+import threading
+
+
+class EmailThread(threading.Thread):
+
+    def __init__(self,email):
+        self.email=email
+        threading.Thread.__init__(self)
+
+    def run(self):
+        self.email.send()
 
 
 def send_action_email(user, request):
@@ -28,7 +41,7 @@ def send_action_email(user, request):
 
     email = EmailMessage(subject=email_subject, body=email_body, from_email=settings.EMAIL_FROM_USER, to=[user.email])
 
-    email.send(EmailMessage)
+    EmailThread(email).start()
 
 
 @auth_user_should_not_access
@@ -109,16 +122,16 @@ def logout_user(request):
 def activate_user(request, uidb64, token):
     try:
         uid = force_str(urlsafe_base64_decode(uidb64))
-        user = User.object.get(pk=uid)
+        user = User.objects.filter(pk=uid).first()
 
     except Exception as e:
         user = None
 
-    if user and generate_token.check_token(user):
-        user.is_email_verified=True
+    if default_token_generator.check_token(user, token):
+        user.is_email_verified = True
         user.save()
 
-        messages.add_message(request,messages.SUCCESS,'Email verified, you can now Login')
+        messages.add_message(request,messages.SUCCESS, 'Email verified, you can now Login')
         return redirect(reverse('login'))
 
     return  render(request,'authentication/activate-failed.html')
