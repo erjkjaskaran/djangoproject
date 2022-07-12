@@ -1,5 +1,3 @@
-import threading
-
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from validate_email import validate_email
@@ -41,7 +39,8 @@ def send_action_email(user, request):
 
     email = EmailMessage(subject=email_subject, body=email_body, from_email=settings.EMAIL_FROM_USER, to=[user.email])
 
-    EmailThread(email).start()
+    if not settings.TESTING:
+        EmailThread(email).start()
 
 
 @auth_user_should_not_access
@@ -49,25 +48,20 @@ def login_user(request):
     if request.method == "POST":
         username = request.POST.get('username')
         password = request.POST.get('password')
-
         if not User.objects.filter(username=username).exists():
             messages.add_message(request, messages.ERROR, "User not registered. Register your account")
             return render(request, 'authentication/registration.html')
-
         user = authenticate(request, username=username, password=password)
-
         if not user:
             messages.add_message(request, messages.ERROR, "Invalid Credentials")
             return render(request, 'authentication/login.html')
-
         if not user.is_email_verified:
             messages.add_message(request, messages.ERROR, "Email is not verified. Please check your inbox.")
-            return render(request, 'authentication/login.html')
+            return render(request, 'authentication/login.html', status=409)
 
         login(request, user)
 
         messages.add_message(request, messages.SUCCESS, f"Welcome { user.username}")
-
         return redirect(reverse('home'))
 
     return render(request, 'authentication/login.html')
@@ -100,7 +94,7 @@ def register(request):
             messages.add_message(request, messages.ERROR, "E-mail is taken, Choose another one")
             context['has_error'] = True
         if context['has_error']:
-            return render(request, 'authentication/registration.html', context)
+            return render(request, 'authentication/registration.html', context, status=409)
 
         user = User.objects.create_user(username=username, email=email)
         user.set_password(password)
@@ -131,7 +125,7 @@ def activate_user(request, uidb64, token):
         user.is_email_verified = True
         user.save()
 
-        messages.add_message(request,messages.SUCCESS, 'Email verified, you can now Login')
+        messages.add_message(request, messages.SUCCESS, 'Email verified, you can now Login')
         return redirect(reverse('login'))
 
-    return  render(request,'authentication/activate-failed.html')
+    return render(request, 'authentication/activate-failed.html')

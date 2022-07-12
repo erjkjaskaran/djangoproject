@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 import os
 from pathlib import Path
 from decouple import config
+import sys
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,6 +26,8 @@ SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG')
+
+TESTING = len(sys.argv) > 1 and sys.argv[1] == 'test'
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
@@ -118,6 +121,8 @@ USE_I18N = True
 USE_TZ = True
 
 # EMAIL CONFIG
+
+EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
 
 EMAIL_FROM_USER = config('EMAIL_FROM_USER')
 EMAIL_HOST = config('EMAIL_HOST')
