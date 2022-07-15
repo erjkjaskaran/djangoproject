@@ -1,11 +1,13 @@
 from django.test import TestCase
 from authentication.models import User
 from faker import Faker
+from django.urls import reverse
+from todo.models import Todo
 
 faker = Faker()
 username = faker.name().split(" ")[0]
 email = faker.email()
-password = faker.paragraph(nb_sentences=5)
+password = faker.paragraph(nb_sentences=1)
 
 
 class TestSetup(TestCase):
@@ -19,6 +21,15 @@ class TestSetup(TestCase):
             "description": faker.paragraph(nb_sentences=10)
         }
         return self.todo
+
+    def create_todo_with_user(self, user):
+        todo = self.create_todo()
+        self.client.post(reverse('create-todo'), {
+            'title': todo['title'],
+            'description': todo['description'],
+            'user': user
+        })
+        return Todo.objects.last()
 
     def register_user(self, username=username, email=email, password=password, password2=password):
         self.user = {
@@ -40,6 +51,14 @@ class TestSetup(TestCase):
         user = User.objects.filter(username=username).first()
         user.is_email_verified = True
         user.save()
+        return user
+
+    def login(self, user2=None,passwrd=None):
+        if user2!=None:
+            user,password2=user2, passwrd
+        else:
+            user,password2=self.create_test_user(),password
+        self.client.login(username=user.username, password=password2)
         return user
 
     def tearDown(self):

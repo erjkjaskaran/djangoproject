@@ -5,3 +5,4 @@ omit=
     */migrations/*
     */staticfiles/*
     */__init__.py/*
+    manage.py

@@ -59,15 +59,15 @@ def show_todos(request, todos):
 def todo_delete(request, id):
     todo = get_object_or_404(Todo, pk=id)
     context = {'todo': todo}
-    if request.method == "POST":
-        if todo.owner == request.user:
+    if todo.owner == request.user:
+        if request.method == "POST":
             todo.delete()
             messages.add_message(request, messages.ERROR, "Todo Deleted Successfully")
             return HttpResponseRedirect(reverse('home'))
-        else:
-            messages.add_message(request,messages.ERROR, "You do no have access for this operation")
-            return redirect(reverse('home'))
-    return render(request, 'todo/todo-delete.html', context)
+        return render(request, 'todo/todo-delete.html', context)
+    else:
+        messages.add_message(request, messages.ERROR, "You do no have access for this operation")
+        return redirect(reverse('home'))
 
 
 @login_required
