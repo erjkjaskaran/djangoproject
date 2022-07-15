@@ -27,6 +27,10 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG')
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://todo-django-postgres.herokuapp.com'
+]
+
 TESTING = len(sys.argv) > 1 and sys.argv[1] == 'test'
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
